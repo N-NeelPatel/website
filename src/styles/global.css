@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* Dark mode is class-based so the toggle can override the OS preference */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  /* Semantic colours, switched per theme below */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+}
+
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --border: #e7e5e4;
+  --fg: #1c1917;
+  --muted: #57534e;
+  --accent: #047857;
+  --accent-soft: #d1fae5;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b0d0c;
+  --surface: #121614;
+  --border: #232a26;
+  --fg: #ecefed;
+  --muted: #9aa49f;
+  --accent: #34d399;
+  --accent-soft: #0f2a20;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    @apply bg-accent text-bg;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent rounded-sm;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-5xl px-5 sm:px-8;
+  }
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.18em] text-accent;
+  }
+  .section-title {
+    @apply text-2xl font-semibold tracking-tight sm:text-3xl;
+  }
+  .card {
+    @apply rounded-2xl border border-border bg-surface;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full border border-border px-2.5 py-0.5 font-mono text-[11px] text-muted;
+  }
+  .link-underline {
+    @apply underline decoration-border underline-offset-4 transition-colors hover:decoration-accent;
+  }
+
+  /* Long-form case study text */
+  .prose-case {
+    @apply text-[17px] leading-8 text-fg/90;
+  }
+  .prose-case h2 {
+    @apply mt-12 mb-4 text-xl font-semibold tracking-tight text-fg;
+  }
+  .prose-case h3 {
+    @apply mt-8 mb-3 font-semibold text-fg;
+  }
+  .prose-case p {
+    @apply my-5;
+  }
+  .prose-case ul {
+    @apply my-5 list-none space-y-2 pl-0;
+  }
+  .prose-case ul > li {
+    @apply relative pl-6;
+  }
+  .prose-case ul > li::before {
+    content: "";
+    @apply absolute left-0 top-[0.8em] h-1.5 w-1.5 rounded-full bg-accent;
+  }
+  .prose-case strong {
+    @apply font-semibold text-fg;
+  }
+  .prose-case blockquote {
+    @apply my-8 border-l-2 border-accent pl-5 text-lg italic text-muted;
+  }
+  .prose-case code {
+    @apply rounded bg-accent-soft px-1.5 py-0.5 font-mono text-[0.85em];
+  }
+  .prose-case a {
+    @apply text-accent underline underline-offset-4;
+  }
+}
+
+/* Gentle reveal on scroll; off for people who prefer less motion */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}

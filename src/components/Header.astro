@@ -1,0 +1,56 @@
+---
+import Icon from "./Icon.astro";
+import { profile } from "../data/profile";
+import { url } from "../lib/url";
+
+// `wide` links are hidden on small phones so the header never overflows
+const nav = [
+  { href: url("/#work"), label: "Work", wide: false },
+  { href: url("/#experience"), label: "Experience", wide: true },
+  { href: url("/#approach"), label: "Approach", wide: true },
+  { href: url("/#contact"), label: "Contact", wide: false },
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-transparent bg-bg/75 backdrop-blur-md transition-colors" data-header>
+  <div class="container-page flex h-16 items-center justify-between">
+    <a href={url("/")} class="group flex items-center gap-2.5 font-semibold tracking-tight">
+      <span class="grid h-8 w-8 place-items-center rounded-lg bg-fg font-mono text-xs text-bg transition-colors group-hover:bg-accent">NP</span>
+      <span class="hidden sm:inline">{profile.name}</span>
+    </a>
+    <nav aria-label="Main" class="flex items-center gap-1 sm:gap-2">
+      <ul class="flex items-center gap-0.5 text-sm text-muted sm:gap-1">
+        {
+          nav.map((item) => (
+            <li class:list={[item.wide && "hidden sm:block"]}>
+              <a href={item.href} class="rounded-md px-2 py-1.5 transition-colors hover:text-fg sm:px-3">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <button
+        type="button"
+        data-theme-toggle
+        class="ml-1 grid h-9 w-9 place-items-center rounded-lg border border-border text-muted transition-colors hover:text-fg"
+        aria-label="Toggle colour theme"
+      >
+        <Icon name="sun" class="hidden h-4 w-4 dark:block" />
+        <Icon name="moon" class="h-4 w-4 dark:hidden" />
+      </button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const onScroll = () => header?.classList.toggle("border-border", window.scrollY > 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  });
+</script>

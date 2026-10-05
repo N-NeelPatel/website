@@ -27,3 +27,13 @@ dist-ssr
 
 # vscode
 .vscode
+# Private source material - never commit
+Linkedin_Profile.pdf
+Resume_cv.pdf
+Stories_about_work.txt
+private/
+
+# Astro
+dist/
+.astro/
+fact_sheet.txt

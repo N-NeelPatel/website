@@ -1,0 +1,74 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Icon from "../../components/Icon.astro";
+import { url } from "../../lib/url";
+
+export async function getStaticPaths() {
+  const work = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+  return work.map((entry, i) => ({
+    params: { id: entry.id },
+    props: { entry, next: work[(i + 1) % work.length] },
+  }));
+}
+
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const { data } = entry;
+---
+
+<Layout title={`${data.title} | Neel Patel`} description={data.summary}>
+  <article class="container-page pt-12 sm:pt-16">
+    <a href={url("/#work")} class="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-fg">
+      <Icon name="arrow-left" class="h-4 w-4" /> All work
+    </a>
+
+    <header class="mt-10 max-w-3xl">
+      <p class="eyebrow">{data.company} · {data.period}</p>
+      <h1 class="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">{data.title}</h1>
+      <p class="mt-6 text-lg leading-relaxed text-muted sm:text-xl">{data.summary}</p>
+      <p class="mt-6 text-sm"><span class="text-muted">Role:</span> {data.role}</p>
+    </header>
+
+    <dl
+      class:list={[
+        "mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border",
+        data.metrics.length >= 4 && "sm:grid-cols-4",
+      ]}
+    >
+      {
+        data.metrics.map((m) => (
+          <div class="bg-surface p-5 sm:p-6">
+            <dt class="sr-only">{m.label}</dt>
+            <dd>
+              <span class="block font-mono text-xl font-semibold text-accent sm:text-2xl">{m.value}</span>
+              <span class="mt-1.5 block text-xs leading-snug text-muted sm:text-sm">{m.label}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-[1fr_220px]">
+      <div class="prose-case max-w-2xl">
+        <Content />
+      </div>
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <p class="text-sm font-medium text-muted">Stack</p>
+        <ul class="mt-3 flex flex-wrap gap-1.5">
+          {data.stack.map((tech) => <li class="chip">{tech}</li>)}
+        </ul>
+      </aside>
+    </div>
+
+    <nav class="mt-20 border-t border-border pt-10" aria-label="Next case study">
+      <a href={url(`/work/${next.id}/`)} class="group block">
+        <p class="text-sm text-muted">Next case study</p>
+        <p class="mt-2 flex items-center gap-3 text-xl font-semibold tracking-tight transition-colors group-hover:text-accent sm:text-2xl">
+          {next.data.title}
+          <Icon name="arrow-right" class="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
+        </p>
+      </a>
+    </nav>
+  </article>
+</Layout>
