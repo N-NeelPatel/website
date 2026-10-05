@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://n-neelpatel.github.io',
   base: '/website',
-  trailingSlash: 'always',
+  trailingSlash: 'ignore',
 
   vite: {
     plugins: [tailwindcss()],
